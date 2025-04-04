@@ -1,22 +1,23 @@
 "use client"
 
-import { useState, useCallback } from "react"
-import { Wallet, Clock, Car, Building, Briefcase, Coffee, Calendar } from "lucide-react"
+import { useState, useCallback, useEffect } from "react"
+import { Wallet, Clock, Car, Building, Coffee, Calendar, Heart, Star, Sparkles, Briefcase } from "lucide-react"
 
-// Add common style constants
+// Add common style constants with updated cool styling
 const commonStyles = {
   input:
-    "w-full rounded-md border border-gray-200 px-2 py-1 text-sm focus:ring-1 focus:ring-blue-500 dark:border-gray-700 dark:bg-gray-800",
-  inputContainer: "max-w-[200px]",
-  label: "block text-xs font-medium text-gray-600 dark:text-gray-400 mb-1.5",
-  sectionTitle: "text-lg font-semibold text-gray-700 dark:text-gray-300 mb-3",
-  subTitle: "text-xs font-medium text-gray-600 dark:text-gray-400 mb-2",
+    "w-full rounded-md border border-gray-200 px-3 py-2 text-sm focus:ring-1 focus:ring-blue-500 dark:border-gray-700 dark:bg-gray-800 transition-all",
+  inputContainer: "max-w-[220px]",
+  label: "block text-sm font-medium text-gray-600 dark:text-gray-400 mb-2",
+  sectionTitle: "text-xl font-semibold text-gray-800 dark:text-gray-200 mb-4 flex items-center",
+  subTitle: "text-sm font-medium text-gray-500 dark:text-gray-400 mb-3",
+  sectionContainer: "space-y-6 border-b border-gray-200 dark:border-gray-700 pb-8 last:border-0",
 }
 
 const SalaryCalculator = () => {
   const [formData, setFormData] = useState({
     // salary
-    annualSalary: "", //number
+    annualSalary: "0", //number
 
     // life time
     currentAge: "30", //number
@@ -28,7 +29,7 @@ const SalaryCalculator = () => {
     workHoursPerDay: "8", //number
     annualLeave: "10", //number
     publicHolidays: "14", //number
-    selfPaidCoffee: "", //boolean
+    selfPaidCoffee: "yes", //boolean
 
     // overtime
     overtimeFrequency: "lv1",
@@ -75,6 +76,7 @@ const SalaryCalculator = () => {
   const [showResults, setShowResults] = useState(false)
   const [typedText, setTypedText] = useState("")
   const [isTyping, setIsTyping] = useState(false)
+  const [activeTab, setActiveTab] = useState("walk")
 
   const getCoefficient = (value: string) => {
     if (value === "lv1") return 0.8
@@ -292,18 +294,18 @@ const SalaryCalculator = () => {
     onChange: (name: string, value: string) => void
     options: Array<{ label: string; value: string }>
   }) => (
-    <div className="space-y-1.5">
+    <div className="space-y-2.5">
       <label className={commonStyles.label}>{label}</label>
-      <div className="grid grid-cols-3 gap-1.5">
+      <div className="grid grid-cols-1 gap-2.5">
         {options.map((option) => (
           <button
             key={option.value}
-            className={`px-2 py-1.5 rounded-md text-xs transition-colors
-              ${
-                value === option.value
-                  ? "bg-blue-50 text-blue-600 dark:bg-blue-900 dark:text-blue-300 font-medium"
-                  : "bg-gray-50 hover:bg-gray-100 dark:bg-gray-700 dark:hover:bg-gray-600 dark:text-gray-300"
-              }`}
+            className={`px-4 py-2.5 rounded-lg text-sm transition-all
+            ${
+              value === option.value
+                ? "bg-blue-100 text-blue-700 dark:bg-blue-800 dark:text-blue-200 font-medium border-2 border-blue-400 dark:border-blue-600"
+                : "bg-gray-50 hover:bg-gray-100 dark:bg-gray-800 dark:hover:bg-gray-700 dark:text-gray-300 border border-transparent"
+            }`}
             onClick={() => onChange(name, option.value)}
             type="button"
           >
@@ -342,7 +344,7 @@ const SalaryCalculator = () => {
     return `
 Dear friend,
 
-Let me tell you about your work life...
+Let me tell you about your work life... ✨
 
 You work <strong>${workDays}</strong> days every year, which might sound like a lot.
 
@@ -356,29 +358,46 @@ Based on our comprehensive analysis, your work-life value index is <strong>${val
 This means you are "${assessment.text}".
 
 Remember, life is not just about work.
-Make every moment count!
+Make every moment count! 💖
 `
   }
 
+  useEffect(() => {
+    // Update active tab when commute type changes
+    setActiveTab(formData.commuteType)
+  }, [formData.commuteType])
+
   return (
-    <div className="max-w-4xl mx-auto p-4 space-y-6">
+    <div className="relative max-w-4xl mx-auto p-6 space-y-8">
+      <div className="absolute inset-0 -z-10 overflow-hidden">
+        {/* <FloatingBubbles /> */}
+      </div>
+
       {/* Title section */}
-      <div className="text-center space-y-1">
-        <h1 className="text-2xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-blue-600 to-purple-600">
-          Work Value Calculator
-        </h1>
-        <p className="text-xs text-gray-600 dark:text-gray-400">Quantify your work value scientifically</p>
+      <div className="text-center space-y-3">
+        <div className="flex justify-center">
+          <div className="relative">
+            <h1 className="text-3xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-blue-500 to-cyan-600">
+              Work Value Calculator
+            </h1>
+            <Sparkles className="absolute -top-4 -right-8 w-6 h-6 text-blue-400" />
+            <Star className="absolute -bottom-2 -left-6 w-5 h-5 text-cyan-400" />
+          </div>
+        </div>
+        <p className="text-sm text-blue-600 dark:text-blue-400 font-medium">
+          Find out if your job is worth your precious time ✨
+        </p>
       </div>
 
       {/* Main calculation form */}
-      <div className="bg-white dark:bg-gray-800 rounded-xl shadow-lg p-6 space-y-8">
+      <div className="bg-white dark:bg-gray-800 rounded-2xl shadow-lg p-8 space-y-10 border-2 border-blue-100 dark:border-blue-900">
         {/* 1. Basic Information */}
-        <section className="space-y-4">
+        <section className={commonStyles.sectionContainer}>
           <h2 className={commonStyles.sectionTitle}>
-            <Calendar className="inline-block w-5 h-5 mr-2 text-blue-500" />
+            <Calendar className="inline-block w-6 h-6 mr-3 text-blue-500" />
             Basic Information
           </h2>
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
             <div>
               <label className={commonStyles.label}>Current Age</label>
               <div className={commonStyles.inputContainer}>
@@ -391,7 +410,7 @@ Make every moment count!
               </div>
             </div>
             <div>
-              <label className={commonStyles.label}>Retirement Age</label>
+              <label className={commonStyles.label}>Hope you can retire at</label>
               <div className={commonStyles.inputContainer}>
                 <input
                   type="number"
@@ -402,7 +421,7 @@ Make every moment count!
               </div>
             </div>
             <div>
-              <label className={commonStyles.label}>Life Expectancy</label>
+              <label className={commonStyles.label}>Hope you can live to</label>
               <div className={commonStyles.inputContainer}>
                 <input
                   type="number"
@@ -416,15 +435,15 @@ Make every moment count!
         </section>
 
         {/* 2. Income */}
-        <section className="space-y-4">
+        <section className={commonStyles.sectionContainer}>
           <h2 className={commonStyles.sectionTitle}>
-            <Wallet className="inline-block w-5 h-5 mr-2 text-green-500" />
+            <Wallet className="inline-block w-6 h-6 mr-3 text-green-500" />
             Income Information
           </h2>
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+          <div className="grid grid-cols-1 gap-8">
             <div>
-              <label className={commonStyles.label}>Annual Salary (before tax)</label>
-              <div className={`flex items-center ${commonStyles.inputContainer}`}>
+              <label className={commonStyles.label}>Annual Salary (won't be compared with others)</label>
+              <div className="max-w-xs">
                 <input
                   type="number"
                   value={formData.annualSalary}
@@ -434,55 +453,55 @@ Make every moment count!
                 />
               </div>
             </div>
-
+          
             <div>
-              <label className={commonStyles.label}>Self-paid Coffee</label>
               <RadioGroup
-                label=""
+                label="Do you pay for coffee by yourself in work days?"
                 name="selfPaidCoffee"
                 value={formData.selfPaidCoffee}
                 onChange={handleInputChange}
                 options={[
-                  { label: "Yes", value: "yes" },
-                  { label: "No", value: "no" },
-                  { label: "N/A", value: "" },
+                  { label: "Oh God, Yes 😭", value: "yes" },
+                  { label: "I'm not a coffee addict/My company pays for it 😎", value: "no" },
                 ]}
               />
             </div>
 
-            <RadioGroup
-              label="Overtime Frequency"
-              name="overtimeFrequency"
-              value={formData.overtimeFrequency}
-              onChange={handleInputChange}
-              options={[
-                { label: "Rarely", value: "lv1" },
-                { label: "Sometimes", value: "lv2" },
-                { label: "Often", value: "lv3" },
-              ]}
-            />
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+              <RadioGroup
+                label="How often do you work overtime?"
+                name="overtimeFrequency"
+                value={formData.overtimeFrequency}
+                onChange={handleInputChange}
+                options={[
+                  { label: "Rarely, yeppie! 🎉", value: "1.2" },
+                  { label: "Sometimes, I'm ok with it 🙂", value: "1.0" },
+                  { label: "Often, hate it 😠", value: "0.8" },
+                ]}
+              />
 
-            <RadioGroup
-              label="Weekend/Holiday Free Oncall"
-              name="freeOncall"
-              value={formData.freeOncall}
-              onChange={handleInputChange}
-              options={[
-                { label: "Rarely", value: "lv1" },
-                { label: "Sometimes", value: "lv2" },
-                { label: "Often", value: "lv3" },
-              ]}
-            />
+              <RadioGroup
+                label="Do you have weekend/holiday free oncall?"
+                name="freeOncall"
+                value={formData.freeOncall}
+                onChange={handleInputChange}
+                options={[
+                  { label: "I don't pickup any calls from work 🙉", value: "1.2" },
+                  { label: "Sometimes I have to but got paid 💰", value: "1.0" },
+                  { label: "Often and unpaid 😭", value: "0.8" },
+                ]}
+              />
+            </div>
           </div>
         </section>
 
         {/* 3. Time Schedule */}
-        <section className="space-y-4">
+        <section className={commonStyles.sectionContainer}>
           <h2 className={commonStyles.sectionTitle}>
-            <Clock className="inline-block w-5 h-5 mr-2 text-orange-500" />
-            Time Schedule
+            <Clock className="inline-block w-6 h-6 mr-3 text-cyan-500" />
+            Hopefully your job is legal, finger crossed 🤞
           </h2>
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-6">
+          <div className="grid grid-cols-2 md:grid-cols-4 gap-8">
             <div>
               <label className={commonStyles.label}>Work Days Per Week</label>
               <div className={commonStyles.inputContainer}>
@@ -530,29 +549,29 @@ Make every moment count!
           </div>
 
           {/* Free Time in Work */}
-          <div className="mt-6">
-            <h3 className={commonStyles.subTitle}>Free Time During Work</h3>
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+          <div className="mt-8 bg-blue-50 dark:bg-gray-700/50 p-6 rounded-xl border border-blue-100 dark:border-blue-800">
+            <h3 className="text-lg font-medium text-blue-700 dark:text-blue-300 mb-4">Free Time During Work 🕒</h3>
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
               <RadioGroup
                 label="Paid Poop Time"
                 name="paidPoopTime"
                 value={formData.paidPoopTime}
                 onChange={handleInputChange}
                 options={[
-                  { label: "Rarely", value: "lv1" },
-                  { label: "Sometimes", value: "lv2" },
-                  { label: "Often", value: "lv3" },
+                  { label: "I poop very quick and save every second for work 🏃", value: "0.8" },
+                  { label: "I want to poop longer but better not to 🚽", value: "1.0" },
+                  { label: "I can hold it for over 10 minutes and my company pays me for it 💰", value: "1.2" },
                 ]}
               />
               <RadioGroup
-                label="Slack Off Time"
+                label="Slack Off Desk Time"
                 name="slackOffTime"
                 value={formData.slackOffTime}
                 onChange={handleInputChange}
                 options={[
-                  { label: "Rarely", value: "lv1" },
-                  { label: "Sometimes", value: "lv2" },
-                  { label: "Often", value: "lv3" },
+                  { label: "I don't have a desk/There's a camera in front of me 📹", value: "0.8" },
+                  { label: "I can slack off for 10 minutes, then must back to work ⏱️", value: "1.0" },
+                  { label: "I can slack off for whatever I want 😎", value: "1.2" },
                 ]}
               />
               <RadioGroup
@@ -561,9 +580,9 @@ Make every moment count!
                 value={formData.coffeeTime}
                 onChange={handleInputChange}
                 options={[
-                  { label: "Rarely", value: "lv1" },
-                  { label: "Sometimes", value: "lv2" },
-                  { label: "Often", value: "lv3" },
+                  { label: "Love the coffee time with colleagues, can stay for hours ☕", value: "1.2" },
+                  { label: "Quick coffee break ⏱️", value: "1.0" },
+                  { label: "I don't have time for coffee break 😢", value: "0.8" },
                 ]}
               />
               <RadioGroup
@@ -572,9 +591,8 @@ Make every moment count!
                 value={formData.lunchBreak}
                 onChange={handleInputChange}
                 options={[
-                  { label: "Short", value: "lv1" },
-                  { label: "Normal", value: "lv2" },
-                  { label: "Long", value: "lv3" },
+                  { label: "Enjoy lunch as I can, can stay for hours 🍱", value: "1.2" },
+                  { label: "I don't have time for lunch break 😭", value: "0.8" },
                 ]}
               />
             </div>
@@ -582,268 +600,284 @@ Make every moment count!
         </section>
 
         {/* 4. Commute */}
-        <section className="space-y-4">
+        <section className={commonStyles.sectionContainer}>
           <h2 className={commonStyles.sectionTitle}>
-            <Car className="inline-block w-5 h-5 mr-2 text-purple-500" />
-            Commute
+            <Car className="inline-block w-6 h-6 mr-3 text-blue-500" />
+            Does commute take too much time? 🚗
           </h2>
-          <div className="space-y-4">
-            <RadioGroup
-              label="Select Commute Type"
-              name="commuteType"
-              value={formData.commuteType}
-              onChange={handleInputChange}
-              options={[
-                { label: "Walk", value: "walk" },
-                { label: "Drive", value: "drive" },
-                { label: "Public", value: "public" },
-              ]}
-            />
 
-            {formData.commuteType === "walk" && (
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mt-4">
-                <div>
-                  <label className={commonStyles.label}>Walk Time (minutes)</label>
-                  <div className={commonStyles.inputContainer}>
-                    <input
-                      type="number"
-                      value={formData.walkTime}
-                      onChange={(e) => handleInputChange("walkTime", e.target.value)}
-                      className={commonStyles.input}
-                    />
+          {/* Horizontal Navigation Bar */}
+          <div className="flex border-b border-gray-200 dark:border-gray-700 mb-6">
+            <button
+              className={`px-4 py-2 font-medium text-sm border-b-2 transition-all ${
+                activeTab === "walk"
+                  ? "border-blue-500 text-blue-700 dark:text-blue-300 bg-blue-50 dark:bg-blue-900/30"
+                  : "border-transparent text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-300"
+              }`}
+              onClick={() => {
+                setActiveTab("walk")
+                handleInputChange("commuteType", "walk")
+              }}
+            >
+              Walk 🚶
+            </button>
+            <button
+              className={`px-4 py-2 font-medium text-sm border-b-2 transition-all ${
+                activeTab === "drive"
+                  ? "border-blue-500 text-blue-700 dark:text-blue-300 bg-blue-50 dark:bg-blue-900/30"
+                  : "border-transparent text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-300"
+              }`}
+              onClick={() => {
+                setActiveTab("drive")
+                handleInputChange("commuteType", "drive")
+              }}
+            >
+              Drive/Uber 🚗
+            </button>
+            <button
+              className={`px-4 py-2 font-medium text-sm border-b-2 transition-all ${
+                activeTab === "public"
+                  ? "border-blue-500 text-blue-700 dark:text-blue-300 bg-blue-50 dark:bg-blue-900/30"
+                  : "border-transparent text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-300"
+              }`}
+              onClick={() => {
+                setActiveTab("public")
+                handleInputChange("commuteType", "public")
+              }}
+            >
+              Public Transport 🚆
+            </button>
+          </div>
+
+          <div className="space-y-6">
+            {activeTab === "walk" && (
+              <div className="bg-blue-50 dark:bg-gray-700/50 p-6 rounded-xl border border-blue-100 dark:border-blue-800">
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+                  <div>
+                    <label className={commonStyles.label}>Walk Time (minutes)</label>
+                    <div className={commonStyles.inputContainer}>
+                      <input
+                        type="number"
+                        value={formData.walkTime}
+                        onChange={(e) => handleInputChange("walkTime", e.target.value)}
+                        className={commonStyles.input}
+                      />
+                    </div>
                   </div>
+                  <RadioGroup
+                    label="Feel good about walking to work?"
+                    name="tiredness"
+                    value={formData.tiredness}
+                    onChange={handleInputChange}
+                    options={[
+                      { label: "Yes love it, refreshing 🌿", value: "1.2" },
+                      { label: "I don't mind it, but I'm not a fan 🤷", value: "1.0" },
+                      { label: "I hate it especially in rainy and cold days ☔", value: "0.8" },
+                    ]}
+                  />
                 </div>
-                <RadioGroup
-                  label="Tiredness Level"
-                  name="tiredness"
-                  value={formData.tiredness}
-                  onChange={handleInputChange}
-                  options={[
-                    { label: "Low", value: "lv1" },
-                    { label: "Medium", value: "lv2" },
-                    { label: "High", value: "lv3" },
-                  ]}
-                />
               </div>
             )}
 
-            {formData.commuteType === "drive" && (
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mt-4">
-                <div>
-                  <label className={commonStyles.label}>Driving Time (minutes)</label>
-                  <div className={commonStyles.inputContainer}>
-                    <input
-                      type="number"
-                      value={formData.drivingTime}
-                      onChange={(e) => handleInputChange("drivingTime", e.target.value)}
-                      className={commonStyles.input}
-                    />
+            {activeTab === "drive" && (
+              <div className="bg-blue-50 dark:bg-gray-700/50 p-6 rounded-xl border border-blue-100 dark:border-blue-800">
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+                  <div>
+                    <label className={commonStyles.label}>Driving Time (minutes)</label>
+                    <div className={commonStyles.inputContainer}>
+                      <input
+                        type="number"
+                        value={formData.drivingTime}
+                        onChange={(e) => handleInputChange("drivingTime", e.target.value)}
+                        className={commonStyles.input}
+                      />
+                    </div>
                   </div>
+                  <RadioGroup
+                    label="Easy to find parking?"
+                    name="parkingEase"
+                    value={formData.parkingEase}
+                    onChange={handleInputChange}
+                    options={[
+                      { label: "Yes, I can find a parking spot easily 🅿️", value: "1.2" },
+                      { label: "I can bear it, but I'm not a fan 🤷", value: "1.0" },
+                      { label: "I look for a parking spot for 30 minutes everyday 😡", value: "0.8" },
+                    ]}
+                  />
+                  <RadioGroup
+                    label="Let's talk about traffic jam"
+                    name="trafficJam"
+                    value={formData.trafficJam}
+                    onChange={handleInputChange}
+                    options={[
+                      { label: "Luckily I don't have to deal with it 🍀", value: "1.2" },
+                      { label: "I can bear it 🚦", value: "1.0" },
+                      { label: "I hate it, it's a nightmare 😱", value: "0.8" },
+                    ]}
+                  />
                 </div>
-                <RadioGroup
-                  label="Parking Ease"
-                  name="parkingEase"
-                  value={formData.parkingEase}
-                  onChange={handleInputChange}
-                  options={[
-                    { label: "Easy", value: "lv1" },
-                    { label: "Normal", value: "lv2" },
-                    { label: "Difficult", value: "lv3" },
-                  ]}
-                />
-                <RadioGroup
-                  label="Traffic Jam"
-                  name="trafficJam"
-                  value={formData.trafficJam}
-                  onChange={handleInputChange}
-                  options={[
-                    { label: "Rarely", value: "lv1" },
-                    { label: "Sometimes", value: "lv2" },
-                    { label: "Often", value: "lv3" },
-                  ]}
-                />
               </div>
             )}
 
-            {formData.commuteType === "public" && (
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mt-4">
-                <div>
-                  <label className={commonStyles.label}>Waiting Time (minutes)</label>
-                  <div className={commonStyles.inputContainer}>
-                    <input
-                      type="number"
-                      value={formData.waitingTime}
-                      onChange={(e) => handleInputChange("waitingTime", e.target.value)}
-                      className={commonStyles.input}
-                    />
+            {activeTab === "public" && (
+              <div className="bg-blue-50 dark:bg-gray-700/50 p-6 rounded-xl border border-blue-100 dark:border-blue-800">
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+                  <div>
+                    <label className={commonStyles.label}>How long do you walk to the station? (minutes)</label>
+                    <div className={commonStyles.inputContainer}>
+                      <input
+                        type="number"
+                        value={formData.waitingTime}
+                        onChange={(e) => handleInputChange("waitingTime", e.target.value)}
+                        className={commonStyles.input}
+                      />
+                    </div>
                   </div>
-                </div>
-                <div>
-                  <label className={commonStyles.label}>Transit Time (minutes)</label>
-                  <div className={commonStyles.inputContainer}>
-                    <input
-                      type="number"
-                      value={formData.transitTime}
-                      onChange={(e) => handleInputChange("transitTime", e.target.value)}
-                      className={commonStyles.input}
-                    />
+                  <div>
+                    <label className={commonStyles.label}>How long do you wait for the train/bus? (minutes)</label>
+                    <div className={commonStyles.inputContainer}>
+                      <input
+                        type="number"
+                        value={formData.transitTime}
+                        onChange={(e) => handleInputChange("transitTime", e.target.value)}
+                        className={commonStyles.input}
+                      />
+                    </div>
                   </div>
+                  <RadioGroup
+                    label="Is it punctual?"
+                    name="punctuality"
+                    value={formData.punctuality}
+                    onChange={handleInputChange}
+                    options={[
+                      { label: "Everyday it's 100% punctual ⏰", value: "1.2" },
+                      { label: "Sometimes it's late, but I can bear it 🤷", value: "1.0" },
+                      { label: "Hate it, never punctual, hate Google Maps schedules 😡", value: "0.8" },
+                    ]}
+                  />
+                  <RadioGroup
+                    label="How crowded is the train/bus?"
+                    name="crowdedness"
+                    value={formData.crowdedness}
+                    onChange={handleInputChange}
+                    options={[
+                      { label: "Empty, I can always sit down 🪑", value: "1.2" },
+                      { label: "Normal, I can bear it 🧍", value: "1.0" },
+                      { label: "Packed, I can't breathe, feel backpain/legpain 😫", value: "0.8" },
+                    ]}
+                  />
+                  <RadioGroup
+                    label="How was the smell on the train/bus?"
+                    name="smell"
+                    value={formData.smell}
+                    onChange={handleInputChange}
+                    options={[
+                      { label: "Not much people so it's ok 👃", value: "1.2" },
+                      { label: "I can bear it, but I'm not a fan 🤷", value: "1.0" },
+                      { label: "Ewwww.....I need a mask 😷", value: "0.8" },
+                    ]}
+                  />
                 </div>
-                <RadioGroup
-                  label="Punctuality"
-                  name="punctuality"
-                  value={formData.punctuality}
-                  onChange={handleInputChange}
-                  options={[
-                    { label: "Poor", value: "lv1" },
-                    { label: "Average", value: "lv2" },
-                    { label: "Good", value: "lv3" },
-                  ]}
-                />
-                <RadioGroup
-                  label="Crowdedness"
-                  name="crowdedness"
-                  value={formData.crowdedness}
-                  onChange={handleInputChange}
-                  options={[
-                    { label: "Empty", value: "lv1" },
-                    { label: "Normal", value: "lv2" },
-                    { label: "Packed", value: "lv3" },
-                  ]}
-                />
-                <RadioGroup
-                  label="Smell"
-                  name="smell"
-                  value={formData.smell}
-                  onChange={handleInputChange}
-                  options={[
-                    { label: "Pleasant", value: "lv1" },
-                    { label: "Neutral", value: "lv2" },
-                    { label: "Unpleasant", value: "lv3" },
-                  ]}
-                />
               </div>
             )}
           </div>
         </section>
 
         {/* 5. Work Environment */}
-        <section className="space-y-4">
+        <section className={commonStyles.sectionContainer}>
           <h2 className={commonStyles.sectionTitle}>
-            <Building className="inline-block w-5 h-5 mr-2 text-cyan-500" />
+            <Building className="inline-block w-6 h-6 mr-3 text-cyan-500" />
             Work Environment
           </h2>
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-            <RadioGroup
-              label="Colleague Quality"
-              name="colleagueQuality"
-              value={formData.colleagueQuality}
-              onChange={handleInputChange}
-              options={[
-                { label: "Poor", value: "lv1" },
-                { label: "Average", value: "lv2" },
-                { label: "Excellent", value: "lv3" },
-              ]}
-            />
+          <div className="mt-8 bg-blue-50 dark:bg-gray-700/50 p-6 rounded-xl border border-blue-100 dark:border-blue-800">
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+              <RadioGroup
+                label="How good are your colleagues?"
+                name="colleagueQuality"
+                value={formData.colleagueQuality}
+                onChange={handleInputChange}
+                options={[
+                  { label: "Most of them are idiots 🙄", value: "0.8" },
+                  { label: "Average idiots 🤷", value: "1.0" },
+                  { label: "Only a few idiots 😊", value: "1.2" },
+                ]}
+              />
 
-            <RadioGroup
-              label="Leader Relation"
-              name="leaderRelation"
-              value={formData.leaderRelation}
-              onChange={handleInputChange}
-              options={[
-                { label: "Poor", value: "lv1" },
-                { label: "Good", value: "lv2" },
-                { label: "Excellent", value: "lv3" },
-              ]}
-            />
+              <RadioGroup
+                label="How good is your leader?"
+                name="leaderRelation"
+                value={formData.leaderRelation}
+                onChange={handleInputChange}
+                options={[
+                  { label: "Always angry, always yelling at my face 😠", value: "0.8" },
+                  { label: "Just normal 🤷", value: "1.0" },
+                  { label: "Good, I can learn a lot from him/her 🧠", value: "1.2" },
+                ]}
+              />
 
-            <RadioGroup
-              label="Mentor Guidance"
-              name="mentorGuidance"
-              value={formData.mentorGuidance}
-              onChange={handleInputChange}
-              options={[
-                { label: "Minimal", value: "lv1" },
-                { label: "Adequate", value: "lv2" },
-                { label: "Excellent", value: "lv3" },
-              ]}
-            />
+              <RadioGroup
+                label="How big is your workspace?"
+                name="workspaceSize"
+                value={formData.workspaceSize}
+                onChange={handleInputChange}
+                options={[
+                  { label: "Cramped, I'm like shrimp in a little box 🍤", value: "0.8" },
+                  { label: "Normal (still hoping for a bigger one with better view) 🪟", value: "1.0" },
+                  { label: "Spacious, I can even do yoga in my workspace 🧘", value: "1.2" },
+                ]}
+              />
 
-            <RadioGroup
-              label="Workspace Size"
-              name="workspaceSize"
-              value={formData.workspaceSize}
-              onChange={handleInputChange}
-              options={[
-                { label: "Cramped", value: "lv1" },
-                { label: "Adequate", value: "lv2" },
-                { label: "Spacious", value: "lv3" },
-              ]}
-            />
+              <RadioGroup
+                label="How good-looking are your colleagues?"
+                name="socialEnvironment"
+                value={formData.socialEnvironment}
+                onChange={handleInputChange}
+                options={[
+                  { label: "None of them are good-looking, I'm the only one who looks good 💅", value: "0.8" },
+                  { label: "Average, me too 🤷", value: "1.0" },
+                  { label: "Most of them are good looking 😍", value: "1.2" },
+                ]}
+              />
 
-            <RadioGroup
-              label="Social Environment"
-              name="socialEnvironment"
-              value={formData.socialEnvironment}
-              onChange={handleInputChange}
-              options={[
-                { label: "Poor", value: "lv1" },
-                { label: "Average", value: "lv2" },
-                { label: "Excellent", value: "lv3" },
-              ]}
-            />
-
-            <RadioGroup
-              label="Education Level"
-              name="education"
-              value={formData.education}
-              onChange={handleInputChange}
-              options={[
-                { label: "Basic", value: "lv1" },
-                { label: "Bachelor", value: "lv2" },
-                { label: "Advanced", value: "lv3" },
-              ]}
-            />
+              <RadioGroup
+                label="What's your education level?"
+                name="education"
+                value={formData.education}
+                onChange={handleInputChange}
+                options={[
+                  { label: "Tafe/high school 🏫", value: "1.2" },
+                  { label: "Bachelor 🎓", value: "1.0" },
+                  { label: "Master/PhD 🧪", value: "0.8" },
+                ]}
+              />
+            </div>
           </div>
         </section>
 
-        {/* 6. Makeup */}
-        <section className="space-y-4">
+        {/* 6. Personal Factors */}
+        <section className={commonStyles.sectionContainer}>
           <h2 className={commonStyles.sectionTitle}>
-            <Briefcase className="inline-block w-5 h-5 mr-2 text-pink-500" />
-            Personal Factors
+            <Heart className="inline-block w-6 h-6 mr-3 text-blue-500" />
+            Personal Factors - Makeup
           </h2>
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
             <RadioGroup
-              label="Do you need makeup for work?"
+              label="How often do you need to wear makeup for work?"
               name="makeup"
               value={formData.makeup}
               onChange={handleInputChange}
               options={[
-                { label: "No", value: "lv1" },
-                { label: "Sometimes", value: "lv2" },
-                { label: "Always", value: "lv3" },
+                { label: "They don't deserve my makeup 💄", value: "1.2" },
+                { label: "Sometimes ✨", value: "1.0" },
+                { label: "Everyday 😩", value: "0.8" },
               ]}
             />
 
-            <RadioGroup
-              label="How often do you think about quitting?"
-              name="quitJob"
-              value={formData.quitJob}
-              onChange={handleInputChange}
-              options={[
-                { label: "Daily", value: "daily" },
-                { label: "Weekly", value: "weekly" },
-                { label: "Monthly", value: "monthly" },
-                { label: "Never", value: "never" },
-              ]}
-            />
-
-            {formData.makeup !== "lv1" && (
+            {formData.makeup === "1.0" && (
               <>
                 <div>
-                  <label className={commonStyles.label}>Makeup Time Per Day (minutes)</label>
+                  <label className={commonStyles.label}>How long do you spend on makeup everyday? (minutes)</label>
                   <div className={commonStyles.inputContainer}>
                     <input
                       type="number"
@@ -855,40 +889,92 @@ Make every moment count!
                 </div>
 
                 <RadioGroup
-                  label="Makeup Discomfort Level"
+                  label="How uncomfortable is it to wear makeup?"
                   name="discomfort"
                   value={formData.discomfort}
                   onChange={handleInputChange}
                   options={[
-                    { label: "Comfortable", value: "lv1" },
-                    { label: "Bearable", value: "lv2" },
-                    { label: "Uncomfortable", value: "lv3" },
+                    { label: "I feel confident, but still uncomfortable 💄", value: "1.0" },
+                    { label: "My eyes/skin/hair hurt from makeup 😣", value: "0.8" },
+                    { label: "I hate it, I feel like a clown 🤡", value: "0.5" },
                   ]}
                 />
               </>
             )}
 
-            {formData.quitJob === "never" && (
-              <div className="col-span-2 mt-2 text-sm text-red-500 dark:text-red-400 italic">
-                Why are you here friend? 🤔
-              </div>
+            {formData.makeup === "0.8" && (
+              <>
+                <div>
+                  <label className={commonStyles.label}>How long do you spend on makeup everyday? (minutes)</label>
+                  <div className={commonStyles.inputContainer}>
+                    <input
+                      type="number"
+                      value={formData.makeupTimePerDay}
+                      onChange={(e) => handleInputChange("makeupTimePerDay", e.target.value)}
+                      className={commonStyles.input}
+                    />
+                  </div>
+                </div>
+
+                <RadioGroup
+                  label="How uncomfortable is it to wear makeup?"
+                  name="discomfort"
+                  value={formData.discomfort}
+                  onChange={handleInputChange}
+                  options={[
+                    { label: "I feel confident, but still uncomfortable 💄", value: "1.0" },
+                    { label: "My eyes/skin/hair hurt from makeup 😣", value: "0.8" },
+                    { label: "I hate it, I feel like a clown 🤡", value: "0.5" },
+                  ]}
+                />
+              </>
             )}
+          </div>
+        </section>
+
+        {/* Add a separate section for Quit Thoughts */}
+        <section className={commonStyles.sectionContainer}>
+          <h2 className={commonStyles.sectionTitle}>
+            <Briefcase className="inline-block w-6 h-6 mr-3 text-cyan-500" />
+            Quitting Thoughts
+          </h2>
+          <div className="mt-8 bg-blue-50 dark:bg-gray-700/50 p-6 rounded-xl border border-blue-100 dark:border-blue-800">
+            <div>
+              <RadioGroup
+                label="How often do you think about quitting?"
+                name="quitJob"
+                value={formData.quitJob}
+                onChange={handleInputChange}
+                options={[
+                  { label: "Totally tortured by my job, want to quit everyday 😭", value: "0.3" },
+                  { label: "I'm so tired of it but I can bear it 😮‍💨", value: "0.8" },
+                  { label: "I can't, I need money, sometimes work is fun 💰", value: "1.0" },
+                  { label: "Never, I love my job 💖", value: "1.2" },
+                ]}
+              />
+
+              {formData.quitJob === "1.2" && (
+                <div className="col-span-2 mt-2 text-sm text-blue-500 dark:text-blue-400 italic bg-blue-50 dark:bg-blue-900/20 p-4 rounded-lg">
+                  Why are you here friend? 🤔 You seem to love your job already!
+                </div>
+              )}
+            </div>
           </div>
         </section>
 
         {/* Calculate Button */}
         {!showResults && (
-          <div className="text-center py-6">
+          <div className="text-center py-8">
             <button
               onClick={() => {
                 setShowResults(true)
                 typeWriter(generateResultText())
               }}
-              className="px-8 py-3 bg-gradient-to-r from-blue-600 to-purple-600 text-white rounded-lg font-medium text-sm transition-all
-                shadow-lg hover:shadow-xl transform hover:-translate-y-0.5 hover:from-blue-700 hover:to-purple-700"
+              className="px-10 py-4 bg-gradient-to-r from-blue-500 to-cyan-600 text-white rounded-full font-medium text-lg transition-all
+                shadow-lg hover:shadow-xl transform hover:-translate-y-1 hover:from-blue-600 hover:to-cyan-700"
             >
-              <Coffee className="inline-block w-4 h-4 mr-2" />
-              Calculate My Work Value
+              <Coffee className="inline-block w-5 h-5 mr-2" />
+              Calculate My Work Value ✨
             </button>
           </div>
         )}
@@ -896,21 +982,21 @@ Make every moment count!
 
       {/* Result Section */}
       {showResults && (
-        <div className="bg-gradient-to-r from-blue-50 to-purple-50 dark:from-gray-800 dark:to-gray-900 rounded-xl p-6 shadow-lg">
+        <div className="bg-gradient-to-r from-blue-50 to-cyan-50 dark:from-blue-900/20 dark:to-cyan-900/20 rounded-2xl p-8 shadow-lg border-2 border-blue-100 dark:border-blue-800/50">
           <div
-            className="whitespace-pre-wrap font-sans text-sm leading-relaxed text-gray-700 dark:text-gray-300"
+            className="whitespace-pre-wrap font-sans text-lg leading-relaxed text-gray-700 dark:text-gray-300"
             dangerouslySetInnerHTML={{
               __html: typedText.replace(
                 /<strong>(.*?)<\/strong>/g,
-                '<span class="text-lg font-bold text-gray-900 dark:text-white">$1</span>',
+                '<span class="text-xl font-bold text-blue-600 dark:text-blue-400">$1</span>',
               ),
             }}
           />
           {!isTyping && (
-            <div className="mt-6 text-center">
+            <div className="mt-8 text-center">
               <button
                 onClick={() => setShowResults(false)}
-                className="px-4 py-2 bg-gray-200 hover:bg-gray-300 dark:bg-gray-700 dark:hover:bg-gray-600 rounded-md text-sm transition-colors"
+                className="px-6 py-3 bg-white hover:bg-gray-100 dark:bg-gray-800 dark:hover:bg-gray-700 text-blue-600 dark:text-blue-400 rounded-full text-sm transition-all border-2 border-blue-200 dark:border-blue-800 shadow-md hover:shadow-lg"
               >
                 Back to Calculator
               </button>
@@ -923,4 +1009,3 @@ Make every moment count!
 }
 
 export default SalaryCalculator
-
