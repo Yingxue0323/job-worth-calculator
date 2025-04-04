@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 import localFont from "next/font/local";
 import "./globals.css";
-
+import { SpeedInsights } from "@vercel/speed-insights/next";
 const geistSans = localFont({
   src: "./fonts/GeistVF.woff",
   variable: "--font-geist-sans",
@@ -29,6 +29,7 @@ export default function RootLayout({
         className={`${geistSans.variable} ${geistMono.variable} antialiased`}
       >
         {children}
+        <SpeedInsights />
         <div className="pb-16"></div>
         <footer className="w-full py-4 border-t bg-gray-50 dark:bg-gray-900 dark:border-gray-800 fixed bottom-0 left-0 shadow-sm">
           <div className="max-w-5xl mx-auto px-4">
